@@ -16,8 +16,7 @@
       "back": "Back",
       "forward": "Forward",
       "sort": "Sort",
-      "filter": "Filter",
-      "upsert": "Upsert"
+      "filter": "Filter"
     },
     "entities": {
       "servicecode": "Service Code",
