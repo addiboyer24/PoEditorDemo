@@ -16,7 +16,8 @@
       "back": "Volver",
       "forward": "Adelante",
       "sort": "Ordenar",
-      "filter": "Filtro"
+      "filter": "Filtro",
+      "blah": "Blah"
     },
     "entities": {
       "servicecode": "Código de servicio",
