@@ -1,0 +1,79 @@
+{
+  "common": {
+    "actions": {
+      "save": "",
+      "cancel": "",
+      "edit": "",
+      "delete": "",
+      "submit": "",
+      "next": "",
+      "proceed": "",
+      "yes": "",
+      "no": "",
+      "sign": "",
+      "selectall": "",
+      "clearall": "",
+      "back": "",
+      "forward": "",
+      "sort": "",
+      "filter": "",
+      "blah": ""
+    },
+    "entities": {
+      "servicecode": "",
+      "tasks": "",
+      "evv": "",
+      "calendar": "",
+      "notes": ""
+    },
+    "error": {
+      "http": ""
+    },
+    "persontypes": {
+      "caregiver": "",
+      "participant": ""
+    },
+    "time": {
+      "today": ""
+    }
+  },
+  "dashboard": {
+    "welcome": {
+      "p1": "",
+      "p2": "",
+      "p3": ""
+    }
+  },
+  "navigation": {
+    "home": "",
+    "shifts": "",
+    "logshift": "",
+    "logmileage": "",
+    "logother": "",
+    "logdashboard": "",
+    "viewshifts": "",
+    "viewmileage": "",
+    "viewother": "",
+    "directclassic": "",
+    "logout": ""
+  },
+  "notes": {
+    "title": "",
+    "delete": "",
+    "deleteMessage": ""
+  },
+  "redirect": {
+    "message": ""
+  },
+  "shiftattestation": {
+    "title": "",
+    "message": ""
+  },
+  "shiftentry": {
+    "labels": {
+      "timein": "",
+      "timeout": "",
+      "timetotal": ""
+    }
+  }
+}
