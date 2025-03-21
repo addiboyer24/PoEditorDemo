@@ -1,6 +1,7 @@
 {
   "common": {
     "actions": {
+      "blah": "Blah",
       "save": "Save",
       "cancel": "Cancel",
       "edit": "Edit",
