@@ -1,7 +1,7 @@
 {
   "common": {
     "actions": {
-      "save": "Save",
+      "save": "Save new",
       "cancel": "Cancel",
       "edit": "Edit",
       "delete": "Delete",
@@ -16,8 +16,7 @@
       "back": "Back",
       "forward": "Forward",
       "sort": "Sort",
-      "filter": "Filter",
-      "blah": "Blah"
+      "filter": "Filter"
     },
     "entities": {
       "servicecode": "Service Code",
