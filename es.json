@@ -33,7 +33,7 @@
       "participant": "Participante"
     },
     "time": {
-      "Today": "Hoy"
+      "today": "Hoy"
     }
   },
   "dashboard": {
@@ -42,11 +42,6 @@
       "p2": "¿Qué te",
       "p3": "gustaría hacer?"
     }
-  },
-  "notes": {
-    "title": "Notas",
-    "delete": "¿Borrar Nota?",
-    "deleteMessage": "Tu nota guardada se borrará. Esto no se puede deshacer. ¿Estás seguro de que quieres borrar la nota?"
   },
   "navigation": {
     "home": "Inicio",
@@ -60,6 +55,11 @@
     "viewother": "Ver Otras Entradas de Tiempo",
     "directclassic": "DirectMyCare Clásico",
     "logout": "Cerrar sesion"
+  },
+  "notes": {
+    "title": "Notas",
+    "delete": "¿Borrar Nota?",
+    "deleteMessage": "Tu nota guardada se borrará. Esto no se puede deshacer. ¿Estás seguro de que quieres borrar la nota?"
   },
   "redirect": {
     "message": "Se le redirigirá a nuestro sitio clásico DirectMyCare. Su experiencia puede verse afectada por el tamaño de la pantalla de su dispositivo."
