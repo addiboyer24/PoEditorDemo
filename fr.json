@@ -1,79 +1,78 @@
 {
   "common": {
     "actions": {
-      "save": "",
-      "cancel": "",
-      "edit": "",
-      "delete": "",
-      "submit": "",
-      "next": "",
-      "proceed": "",
-      "yes": "",
-      "no": "",
-      "sign": "",
-      "selectall": "",
-      "clearall": "",
-      "back": "",
-      "forward": "",
-      "sort": "",
-      "filter": "",
-      "blah": ""
+      "save": "Enregistrer",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "submit": "Submit",
+      "next": "Next",
+      "proceed": "Proceed",
+      "yes": "Yes",
+      "no": "No",
+      "sign": "Sign",
+      "selectall": "Select All",
+      "clearall": "Clear All",
+      "back": "Back",
+      "forward": "Forward",
+      "sort": "Sort",
+      "filter": "Filter"
     },
     "entities": {
-      "servicecode": "",
-      "tasks": "",
-      "evv": "",
-      "calendar": "",
-      "notes": ""
+      "servicecode": "Service Code",
+      "tasks": "Tasks",
+      "evv": "EVV Exception Reason",
+      "calendar": "Calendar",
+      "notes": "Notes"
     },
     "error": {
-      "http": ""
+      "http": "Error occurred while processing the request. Please contact administrator"
     },
     "persontypes": {
-      "caregiver": "",
-      "participant": ""
+      "caregiver": "Caregiver",
+      "participant": "Participant"
     },
     "time": {
-      "today": ""
+      "today": "Today"
     }
   },
   "dashboard": {
     "welcome": {
-      "p1": "",
-      "p2": "",
-      "p3": ""
+      "p1": "Hello, {{firstName}}.",
+      "p2": "What would you",
+      "p3": "like to do?"
     }
   },
   "navigation": {
-    "home": "",
-    "shifts": "",
-    "logshift": "",
-    "logmileage": "",
-    "logother": "",
-    "logdashboard": "",
-    "viewshifts": "",
-    "viewmileage": "",
-    "viewother": "",
-    "directclassic": "",
-    "logout": ""
+    "home": "Home",
+    "shifts": "Shifts",
+    "logshift": "Log Shift",
+    "logmileage": "Log Mileage",
+    "logother": "Log Other Time",
+    "logdashboard": "Log Shifts/Mileage/Other",
+    "viewshifts": "View Shifts",
+    "viewmileage": "View Mileage",
+    "viewother": "View Other Time Entries",
+    "directclassic": "DirectMyCare Classic",
+    "logout": "Logout"
   },
   "notes": {
-    "title": "",
-    "delete": "",
-    "deleteMessage": ""
+    "title": "Notes",
+    "delete": "Delete Note?",
+    "deleteMessage": "Your saved note will be deleted. This cannot be undone. Are you sure you want to delete note?"
   },
   "redirect": {
-    "message": ""
+    "message": "You will be directed to our classic DirectMyCare site. Your experience may be impacted by your device screen size."
   },
   "shiftattestation": {
-    "title": "",
-    "message": ""
+    "title": "Sign Attestation",
+    "message": "I, the Individual Provider, certify that the Client was not in the hospital, facility, or incarcerated during the time reported. I certify that the time reported is a true and accurate representation of when services were performed, and all services performed were within the Client's Plan of Care. I understand that falsifying information is Medicaid Fraud."
   },
   "shiftentry": {
     "labels": {
-      "timein": "",
-      "timeout": "",
-      "timetotal": ""
+      "timein": "Time-In",
+      "timeout": "Time-Out",
+      "timetotal": "Total Time Worked"
     }
   }
 }
