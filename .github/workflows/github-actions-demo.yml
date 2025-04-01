@@ -1,4 +1,4 @@
-name: Upload Translation Files
+name: Upload Translation Files and Add Languages
 
 on:
   push:
@@ -17,25 +17,46 @@ jobs:
     - name: Set up curl
       run: sudo apt-get install curl
 
-    - name: Upload translation files from i18n directory
+    - name: Add languages and upload translation files
       env:
         API_TOKEN: ${{ secrets.POEDITOR_API_TOKEN }}  # Reference to the secret API token
         PROJECT_ID: ${{ secrets.POEDITOR_PROJECT_ID }}  # Reference to the secret project ID
       run: |
-        echo "Starting file uploads..."
+        echo "Starting language addition and file uploads..."
 
-        # Iterate over all files in the i18n directory and upload each one
-        for file in i18n/*; do
-          if [[ -f "$file" ]]; then
-            echo "Uploading file: $file"
-            curl -X POST https://api.poeditor.com/v2/projects/upload \
-              -F api_token="$API_TOKEN" \
-              -F id="$PROJECT_ID" \
-              -F updating="terms" \
-              -F file=@"$file" \
-              -F tags="{\"obsolete\":\"removed-strings\"}"
-            # Sleep for 20 seconds to avoid hitting API rate limit
-            echo "Sleeping for 20 seconds to avoid rate limit..."
-            sleep 20
+        # Iterate over language directories (en, es, etc.) and add languages to PoEditor
+        for lang_dir in i18n/*; do
+          if [[ -d "$lang_dir" ]]; then
+            lang_code=$(basename "$lang_dir")
+            echo "Adding language: $lang_code"
+            curl -X POST https://api.poeditor.com/v2/languages/add \
+              -d api_token="$API_TOKEN" \
+              -d id="$PROJECT_ID" \
+              -d language="$lang_code"
+          fi
+        done
+
+        # Iterate over all language directories and upload terms/translation files
+        for lang_dir in i18n/*; do
+          if [[ -d "$lang_dir" ]]; then
+            lang_code=$(basename "$lang_dir")
+            echo "Uploading terms/translation files for language: $lang_code"
+
+            # Iterate over all files in the language directory
+            for file in "$lang_dir"/*; do
+              if [[ -f "$file" ]]; then
+                echo "Uploading file: $file for language: $lang_code"
+                curl -X POST https://api.poeditor.com/v2/projects/upload \
+                  -F api_token="$API_TOKEN" \
+                  -F id="$PROJECT_ID" \
+                  -F updating="terms_translations" \
+                  -F file=@"$file" \
+                  -F language="$lang_code" \
+                  -F tags="{\"obsolete\":\"removed-strings\"}"
+                # Sleep for 20 seconds to avoid hitting API rate limit
+                echo "Sleeping for 20 seconds to avoid rate limit..."
+                sleep 20
+              fi
+            done
           fi
         done
