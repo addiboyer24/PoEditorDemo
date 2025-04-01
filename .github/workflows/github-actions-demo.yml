@@ -14,8 +14,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up curl
-      run: sudo apt-get install curl
+    - name: Set up curl and jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl jq
 
     - name: Fetch current languages from PoEditor
       env:
@@ -26,11 +28,11 @@ jobs:
         current_languages=$(curl -s -X POST https://api.poeditor.com/v2/languages/list \
           -d api_token="$API_TOKEN" \
           -d id="$PROJECT_ID" | jq -r '.result.languages[].language')
-        
+
         echo "Current languages in PoEditor:"
         echo "$current_languages"
         
-        # Store the languages for further use
+        # Store the current languages to a file for later use
         echo "$current_languages" > current_languages.txt
 
     - name: Sync Languages: Add or Remove
