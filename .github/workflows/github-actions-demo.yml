@@ -29,6 +29,9 @@ jobs:
           -d api_token="$API_TOKEN" \
           -d id="$PROJECT_ID" | jq -r '.result.languages[].code')
 
+        # Normalize current_languages by trimming spaces and line breaks
+        current_languages=$(echo "$current_languages" | tr -s '\n' ' ')
+
         # Debugging output for current languages (code only)
         echo "Current languages fetched from PoEditor:"
         echo "$current_languages"
@@ -50,7 +53,17 @@ jobs:
         # Add languages that are in the repo but not in PoEditor
         for lang in $repo_languages; do
           # Check if the language is already in the list of current languages from PoEditor
-          if [[ ! "$current_languages" =~ "$lang" ]]; then
+          language_exists=false
+          
+          # Iterate over current languages and check if this language exists
+          for current_lang in $current_languages; do
+            if [[ "$current_lang" == "$lang" ]]; then
+              language_exists=true
+              break
+            fi
+          done
+
+          if [[ "$language_exists" == false ]]; then
             echo "Adding language: $lang to PoEditor"
             response=$(curl -s -X POST https://api.poeditor.com/v2/languages/add \
               -d api_token="$API_TOKEN" \
