@@ -32,6 +32,43 @@ jobs:
         echo "Current languages in PoEditor:"
         echo "$current_languages"
 
+    - name: Sync Languages: Add or Remove
+      env:
+        API_TOKEN: ${{ secrets.POEDITOR_API_TOKEN }}
+        PROJECT_ID: ${{ secrets.POEDITOR_PROJECT_ID }}
+      run: |
+        echo "Syncing languages with the repository..."
+
+        # Get the list of language directories in i18n/ (e.g., en, es, fr)
+        repo_languages=$(ls -d i18n/*/ | sed 's#i18n/##;s#/##')
+
+        echo "Languages in the repository:"
+        echo "$repo_languages"
+
+        # Add languages that are in the repo but not in PoEditor
+        for lang in $repo_languages; do
+          if [[ ! "$current_languages" =~ "$lang" ]]; then
+            echo "Adding language: $lang"
+            response=$(curl -s -X POST https://api.poeditor.com/v2/languages/add \
+              -d api_token="$API_TOKEN" \
+              -d id="$PROJECT_ID" \
+              -d language="$lang")
+            echo "Add language response: $response"
+          fi
+        done
+
+        # Delete languages that are in PoEditor but not in the repo
+        for lang in $current_languages; do
+          if [[ ! "$repo_languages" =~ "$lang" ]]; then
+            echo "Deleting language: $lang"
+            response=$(curl -s -X POST https://api.poeditor.com/v2/languages/delete \
+              -d api_token="$API_TOKEN" \
+              -d id="$PROJECT_ID" \
+              -d language="$lang")
+            echo "Delete language response: $response"
+          fi
+        done
+
     - name: Upload Translation Files
       env:
         API_TOKEN: ${{ secrets.POEDITOR_API_TOKEN }}  # Reference to the secret API token
