@@ -1,4 +1,4 @@
-name: API Call Workflow
+name: Upload Translation Files
 
 on:
   push:
@@ -7,20 +7,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  api-call:
+  upload:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
+    
+    - name: Checkout repository
       uses: actions/checkout@v2
 
     - name: Set up curl
       run: sudo apt-get install curl
 
-    - name: Call External API
+    - name: Upload translation files from i18n directory
       env:
-        API_KEY: ${{ secrets.API_KEY }}  # Reference to the secret API key
+        API_TOKEN: ${{ secrets.POEDITOR_API_TOKEN }}  # Reference to the secret API token
+        PROJECT_ID: ${{ secrets.POEDITOR_PROJECT_ID }}  # Reference to the secret project ID
       run: |
-        echo "Making API call..."
-        curl -X GET "https://example.com/api/endpoint" \
-          -H "Authorization: Bearer $API_KEY"
+        echo "Starting file uploads..."
+
+        # Iterate over all files in the i18n directory and upload each one
+        for file in i18n/*; do
+          if [[ -f "$file" ]]; then
+            echo "Uploading file: $file"
+            curl -X POST https://api.poeditor.com/v2/projects/upload \
+              -F api_token="$API_TOKEN" \
+              -F id="$PROJECT_ID" \
+              -F updating="terms" \
+              -F file=@"$file" \
+              -F tags="{\"obsolete\":\"removed-strings\"}"
+            # Sleep for 20 seconds to avoid hitting API rate limit
+            echo "Sleeping for 20 seconds to avoid rate limit..."
+            sleep 20
+          fi
+        done
