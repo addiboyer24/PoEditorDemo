@@ -30,11 +30,13 @@ jobs:
           -d id="$PROJECT_ID" | jq -r '.result.languages[].code')
 
         # Normalize current_languages by trimming spaces and line breaks
-        current_languages=$(echo "$current_languages" | tr -s '\n' ' ')
+        current_languages=($current_languages)  # Convert string into array for comparison
 
         # Debugging output for current languages (code only)
         echo "Current languages fetched from PoEditor:"
-        echo "$current_languages"
+        for lang in "${current_languages[@]}"; do
+          echo "$lang"
+        done
 
     - name: Add Missing Languages from Repo to PoEditor
       env:
@@ -48,7 +50,9 @@ jobs:
 
         # Debugging output for repository languages (code only)
         echo "Languages found in the repository (i18n/):"
-        echo "$repo_languages"
+        for lang in $repo_languages; do
+          echo "$lang"
+        done
 
         # Add languages that are in the repo but not in PoEditor
         for lang in $repo_languages; do
@@ -56,7 +60,7 @@ jobs:
           language_exists=false
           
           # Iterate over current languages and check if this language exists
-          for current_lang in $current_languages; do
+          for current_lang in "${current_languages[@]}"; do
             if [[ "$current_lang" == "$lang" ]]; then
               language_exists=true
               break
