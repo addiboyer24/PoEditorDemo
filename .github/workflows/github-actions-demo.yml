@@ -29,7 +29,8 @@ jobs:
           -d api_token="$API_TOKEN" \
           -d id="$PROJECT_ID" | jq -r '.result.languages[].code')
 
-        echo "Current languages in PoEditor:"
+        # Debugging output for current languages
+        echo "Current languages fetched from PoEditor:"
         echo "$current_languages"
 
     - name: Add Missing Languages from Repo to PoEditor
@@ -42,11 +43,16 @@ jobs:
         # Get the list of language directories in i18n/ (e.g., en, es, fr)
         repo_languages=$(ls -d i18n/*/ | sed 's#i18n/##;s#/##')
 
-        echo "Languages in the repository:"
+        # Debugging output for repository languages
+        echo "Languages found in the repository (i18n/):"
         echo "$repo_languages"
+
+        # Ensure no extra spaces or newlines are included in the comparisons
+        current_languages=$(echo "$current_languages" | tr -s '\n' ' ')
 
         # Add languages that are in the repo but not in PoEditor
         for lang in $repo_languages; do
+          # Check if the language is already in the list of current languages from PoEditor
           if [[ ! "$current_languages" =~ "$lang" ]]; then
             echo "Adding language: $lang to PoEditor"
             response=$(curl -s -X POST https://api.poeditor.com/v2/languages/add \
