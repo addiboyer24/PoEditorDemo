@@ -110,36 +110,4 @@ jobs:
         for lang_dir in i18n/*; do
           if [[ -d "$lang_dir" ]]; then
             lang_code=$(basename "$lang_dir")
-            echo "Uploading terms/translation files for language: $lang_code"
-
-            # Iterate over all files in the language directory
-            for file in "$lang_dir"/*; do
-              if [[ -f "$file" ]]; then
-                echo "Uploading file: $file for language: $lang_code"
-                retry=0
-                max_retries=3
-                success=false
-                while [[ $retry -lt $max_retries && $success == false ]]; do
-                  response=$(curl -s -w "%{http_code}" -o /dev/null -X POST https://api.poeditor.com/v2/projects/upload \
-                    -F api_token="$API_TOKEN" \
-                    -F id="$PROJECT_ID" \
-                    -F updating="terms_translations" \
-                    -F file=@"$file" \
-                    -F language="$lang_code" \
-                    -F tags="{\"obsolete\":\"removed-strings\"}")
-                  if [[ $response -eq 200 ]]; then
-                    echo "Successfully uploaded file: $file for language: $lang_code"
-                    success=true
-                  else
-                    echo "Failed to upload file: $file for language: $lang_code. Retrying... ($((retry+1))/$max_retries)"
-                    ((retry++))
-                    sleep 5  # Wait before retrying
-                  fi
-                done
-                # Sleep for 20 seconds to avoid hitting API rate limit
-                echo "Sleeping for 20 seconds to avoid rate limit..."
-                sleep 20
-              fi
-            done
-          fi
-        done
+            echo "Uploading terms/translation files for language
