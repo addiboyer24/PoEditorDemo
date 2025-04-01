@@ -1,4 +1,4 @@
-name: Upload Translation Files and Add Languages
+name: Sync Languages and Upload Translation Files
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  upload:
+  sync:
     runs-on: ubuntu-latest
     steps:
     
@@ -17,24 +17,66 @@ jobs:
     - name: Set up curl
       run: sudo apt-get install curl
 
-    - name: Add languages and upload translation files
+    - name: Fetch current languages from PoEditor
       env:
         API_TOKEN: ${{ secrets.POEDITOR_API_TOKEN }}  # Reference to the secret API token
         PROJECT_ID: ${{ secrets.POEDITOR_PROJECT_ID }}  # Reference to the secret project ID
       run: |
-        echo "Starting language addition and file uploads..."
+        echo "Fetching current languages from PoEditor..."
+        current_languages=$(curl -s -X POST https://api.poeditor.com/v2/languages/list \
+          -d api_token="$API_TOKEN" \
+          -d id="$PROJECT_ID" | jq -r '.result.languages[].language')
+        
+        echo "Current languages in PoEditor:"
+        echo "$current_languages"
+        
+        # Store the languages for further use
+        echo "$current_languages" > current_languages.txt
 
-        # Iterate over language directories (en, es, etc.) and add languages to PoEditor
-        for lang_dir in i18n/*; do
-          if [[ -d "$lang_dir" ]]; then
-            lang_code=$(basename "$lang_dir")
-            echo "Adding language: $lang_code"
+    - name: Sync Languages: Add or Remove
+      env:
+        API_TOKEN: ${{ secrets.POEDITOR_API_TOKEN }}
+        PROJECT_ID: ${{ secrets.POEDITOR_PROJECT_ID }}
+      run: |
+        echo "Syncing languages with the repository..."
+        
+        # Get the list of language directories in i18n/ (e.g., en, es, fr)
+        repo_languages=$(ls -d i18n/*/ | sed 's#i18n/##;s#/##')
+        
+        echo "Languages in the repository:"
+        echo "$repo_languages"
+
+        # Read the current languages from the previous step
+        current_languages=$(cat current_languages.txt)
+
+        # Add languages that are in the repo but not in PoEditor
+        for lang in $repo_languages; do
+          if [[ ! "$current_languages" =~ "$lang" ]]; then
+            echo "Adding language: $lang"
             curl -X POST https://api.poeditor.com/v2/languages/add \
               -d api_token="$API_TOKEN" \
               -d id="$PROJECT_ID" \
-              -d language="$lang_code"
+              -d language="$lang"
           fi
         done
+
+        # Delete languages that are in PoEditor but not in the repo
+        for lang in $current_languages; do
+          if [[ ! "$repo_languages" =~ "$lang" ]]; then
+            echo "Deleting language: $lang"
+            curl -X POST https://api.poeditor.com/v2/languages/delete \
+              -d api_token="$API_TOKEN" \
+              -d id="$PROJECT_ID" \
+              -d language="$lang"
+          fi
+        done
+
+    - name: Upload Translation Files
+      env:
+        API_TOKEN: ${{ secrets.POEDITOR_API_TOKEN }}  # Reference to the secret API token
+        PROJECT_ID: ${{ secrets.POEDITOR_PROJECT_ID }}  # Reference to the secret project ID
+      run: |
+        echo "Uploading translation files for each language..."
 
         # Iterate over all language directories and upload terms/translation files
         for lang_dir in i18n/*; do
