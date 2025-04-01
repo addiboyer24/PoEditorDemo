@@ -27,7 +27,7 @@ jobs:
         echo "Fetching current languages from PoEditor..."
         current_languages=$(curl -s -X POST https://api.poeditor.com/v2/languages/list \
           -d api_token="$API_TOKEN" \
-          -d id="$PROJECT_ID" | jq -r '.result.languages[].language')
+          -d id="$PROJECT_ID" | jq -r '.result.languages[].code')
 
         echo "Current languages in PoEditor:"
         echo "$current_languages"
