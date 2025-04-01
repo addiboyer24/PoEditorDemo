@@ -29,7 +29,7 @@ jobs:
           -d api_token="$API_TOKEN" \
           -d id="$PROJECT_ID" | jq -r '.result.languages[].code')
 
-        # Debugging output for current languages
+        # Debugging output for current languages (code only)
         echo "Current languages fetched from PoEditor:"
         echo "$current_languages"
 
@@ -43,12 +43,9 @@ jobs:
         # Get the list of language directories in i18n/ (e.g., en, es, fr)
         repo_languages=$(ls -d i18n/*/ | sed 's#i18n/##;s#/##')
 
-        # Debugging output for repository languages
+        # Debugging output for repository languages (code only)
         echo "Languages found in the repository (i18n/):"
         echo "$repo_languages"
-
-        # Ensure no extra spaces or newlines are included in the comparisons
-        current_languages=$(echo "$current_languages" | tr -s '\n' ' ')
 
         # Add languages that are in the repo but not in PoEditor
         for lang in $repo_languages; do
