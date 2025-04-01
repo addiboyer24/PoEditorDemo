@@ -33,7 +33,7 @@
       "participant": "Participante"
     },
     "time": {
-      "Today": "Hoy"
+      "today": "Hoy"
     }
   },
   "dashboard": {
