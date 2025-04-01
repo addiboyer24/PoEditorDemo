@@ -55,10 +55,23 @@ jobs:
         for lang in $repo_languages; do
           if [[ ! "$current_languages" =~ "$lang" ]]; then
             echo "Adding language: $lang"
-            curl -X POST https://api.poeditor.com/v2/languages/add \
-              -d api_token="$API_TOKEN" \
-              -d id="$PROJECT_ID" \
-              -d language="$lang"
+            retry=0
+            max_retries=3
+            success=false
+            while [[ $retry -lt $max_retries && $success == false ]]; do
+              response=$(curl -s -w "%{http_code}" -o /dev/null -X POST https://api.poeditor.com/v2/languages/add \
+                -d api_token="$API_TOKEN" \
+                -d id="$PROJECT_ID" \
+                -d language="$lang")
+              if [[ $response -eq 200 ]]; then
+                echo "Successfully added language: $lang"
+                success=true
+              else
+                echo "Failed to add language: $lang. Retrying... ($((retry+1))/$max_retries)"
+                ((retry++))
+                sleep 5  # Wait before retrying
+              fi
+            done
           fi
         done
 
@@ -66,10 +79,23 @@ jobs:
         for lang in $current_languages; do
           if [[ ! "$repo_languages" =~ "$lang" ]]; then
             echo "Deleting language: $lang"
-            curl -X POST https://api.poeditor.com/v2/languages/delete \
-              -d api_token="$API_TOKEN" \
-              -d id="$PROJECT_ID" \
-              -d language="$lang"
+            retry=0
+            max_retries=3
+            success=false
+            while [[ $retry -lt $max_retries && $success == false ]]; do
+              response=$(curl -s -w "%{http_code}" -o /dev/null -X POST https://api.poeditor.com/v2/languages/delete \
+                -d api_token="$API_TOKEN" \
+                -d id="$PROJECT_ID" \
+                -d language="$lang")
+              if [[ $response -eq 200 ]]; then
+                echo "Successfully deleted language: $lang"
+                success=true
+              else
+                echo "Failed to delete language: $lang. Retrying... ($((retry+1))/$max_retries)"
+                ((retry++))
+                sleep 5  # Wait before retrying
+              fi
+            done
           fi
         done
 
@@ -90,13 +116,26 @@ jobs:
             for file in "$lang_dir"/*; do
               if [[ -f "$file" ]]; then
                 echo "Uploading file: $file for language: $lang_code"
-                curl -X POST https://api.poeditor.com/v2/projects/upload \
-                  -F api_token="$API_TOKEN" \
-                  -F id="$PROJECT_ID" \
-                  -F updating="terms_translations" \
-                  -F file=@"$file" \
-                  -F language="$lang_code" \
-                  -F tags="{\"obsolete\":\"removed-strings\"}"
+                retry=0
+                max_retries=3
+                success=false
+                while [[ $retry -lt $max_retries && $success == false ]]; do
+                  response=$(curl -s -w "%{http_code}" -o /dev/null -X POST https://api.poeditor.com/v2/projects/upload \
+                    -F api_token="$API_TOKEN" \
+                    -F id="$PROJECT_ID" \
+                    -F updating="terms_translations" \
+                    -F file=@"$file" \
+                    -F language="$lang_code" \
+                    -F tags="{\"obsolete\":\"removed-strings\"}")
+                  if [[ $response -eq 200 ]]; then
+                    echo "Successfully uploaded file: $file for language: $lang_code"
+                    success=true
+                  else
+                    echo "Failed to upload file: $file for language: $lang_code. Retrying... ($((retry+1))/$max_retries)"
+                    ((retry++))
+                    sleep 5  # Wait before retrying
+                  fi
+                done
                 # Sleep for 20 seconds to avoid hitting API rate limit
                 echo "Sleeping for 20 seconds to avoid rate limit..."
                 sleep 20
